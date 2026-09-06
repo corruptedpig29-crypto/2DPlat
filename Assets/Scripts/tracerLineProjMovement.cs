@@ -110,6 +110,8 @@ public class tracerLineProjMovement : MonoBehaviour
         }
     }
 
+    //FIX THIS, ADAPT SO THAT ALL PROJECTILES WORK EVEN WHEN THE COLLIDER IS A TRIGGER AT ALL TIMES.
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.CompareTag("Wall"))

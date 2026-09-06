@@ -147,11 +147,13 @@ public class SwordMasterMovement : MonoBehaviour
 
     float lastval = 0f;
 
+    bool specialAttackBegan = false;
 
     float disttoplayer = 0f;
     // Update is called once per frame
     void Update()
     {
+
 
         disttoplayer = Vector2.Distance(rb.position, player.rb.position);
 
@@ -253,9 +255,15 @@ public class SwordMasterMovement : MonoBehaviour
             {
                 runspeedincrease = 0f;
 
+                if(GetComponent<UniHpManager>().hp < 100 && !specialAttackBegan)
+                {
+                    val = 0;
+                    GetComponent<SMSpecialAttack>().beginAttack = true;
+                    specialAttackBegan = true;
 
+                }
 
-                if(val == -6)
+                if (val == -6)
                 {
                     downDash();
                 }

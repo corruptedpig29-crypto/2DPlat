@@ -49,9 +49,7 @@ public class dcoll : MonoBehaviour
         initparryflourishtimer = 0.35f;
     }
     private void Update()
-    {
-
-        
+    {        
 
         /*
         Debug.Log("Parry Timer : "  + parrytimer);

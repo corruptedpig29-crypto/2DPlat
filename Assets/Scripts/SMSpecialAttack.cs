@@ -157,7 +157,7 @@ public class SMSpecialAttack : MonoBehaviour
         {
             return;
         }
-        else
+        else if(!timerReset)
         {
             timerReset = true;
             timer = 0f;
@@ -167,7 +167,7 @@ public class SMSpecialAttack : MonoBehaviour
         timer += Time.deltaTime;
         if (dex < notes.Length - 2)
         {
-
+            Debug.Log(timer);
             if (timer > (notes[dex] - 44576) / 1000 - 0.15f && timer < (notes[dex + 1] - 44576) / 1000 - 0.15f)
             {
                 source.volume = 0.3f;
@@ -189,6 +189,6 @@ public class SMSpecialAttack : MonoBehaviour
 
 
 
-        Debug.Log("hello");
+        //Debug.Log("hello");
     }
 }
