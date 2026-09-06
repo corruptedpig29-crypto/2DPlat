@@ -14,7 +14,6 @@ public class SwordMasterMovement : MonoBehaviour
     [SerializeField] private LayerMask jumpableground;
 
 
-    
 
     
 
@@ -68,7 +67,7 @@ public class SwordMasterMovement : MonoBehaviour
     float osumcd = 0.05f;
 
     float hopbackdur = 0.4f;
-    float sidedashdur = 0.7f;
+    float sidedashdur = 1.2f;
     BoxCollider2D coll;
     Rigidbody2D rb;
 
@@ -164,6 +163,7 @@ public class SwordMasterMovement : MonoBehaviour
 
         if (lastatkended )
         {
+            
             anim.SetInteger("animState", (int)AnimState.idle);
 
             dirX = Mathf.Sign(-(rb.position.x - player.gameObject.GetComponent<Rigidbody2D>().position.x));
@@ -198,7 +198,7 @@ public class SwordMasterMovement : MonoBehaviour
                     else
                     {
                         lastatkended = false;
-                        val = UnityEngine.Random.Range(-5, 0);
+                        val = UnityEngine.Random.Range(-6, 0);
 
                         if(UnityEngine.Random.Range(0,3) == 0)
                         {
@@ -230,7 +230,7 @@ public class SwordMasterMovement : MonoBehaviour
                 lastatkended = false;
 
                 waittimer = 0.4f;
-                val = UnityEngine.Random.Range(1, 4);
+                val = UnityEngine.Random.Range(1, 6);
 
                 if(lastval == 0 && val == 0)
                 {
@@ -254,7 +254,13 @@ public class SwordMasterMovement : MonoBehaviour
                 runspeedincrease = 0f;
 
 
-                if(val == -5)
+
+                if(val == -6)
+                {
+                    downDash();
+                }
+
+                if (val == -5)
                 {
                     teleportsBehindYou();
                 }
@@ -297,7 +303,10 @@ public class SwordMasterMovement : MonoBehaviour
                 {
                     tracerProjSumm();
                 }
-
+                if (val == 5)
+                {
+                    downDash();
+                }
                 lastval = val;
             }
 
@@ -796,12 +805,18 @@ public class SwordMasterMovement : MonoBehaviour
     }
 
 
-    /*void downDash()
+    float downDashbullSummCD = 0.05f;
+    void downDash()
     {
-        /*
+
+        Debug.Log(dirX);
+        Debug.Log("DownDashDur : " + downdashdur);
+        Debug.Log("SideDashDur : " + sidedashdur);
+        Debug.Log("dashSpeed : " + dashspeed);
+
         if (!tped)
         {
-            rb.position = new Vector2(player.rb.position.x + 15f * dirX * -1, player.rb.position.y + 30f);
+            rb.position = new Vector2(player.rb.position.x + 50f * dirX * -1, player.rb.position.y + 90f);
 
             anim.SetInteger("animState", (int)AnimState.idle);
             tped = true;
@@ -811,9 +826,7 @@ public class SwordMasterMovement : MonoBehaviour
             if (downdashdur > 0)
             {
                 downdashdur -= Time.deltaTime;
-
-                rb.velocity = new Vector2(-dirX * dashspeed, dashspeed * -1);
-
+                rb.velocity = new Vector2( - dirX * dashspeed, dashspeed * -1);
 
                 dashspeed += 200f * Time.deltaTime;
 
@@ -822,20 +835,52 @@ public class SwordMasterMovement : MonoBehaviour
                     anim.SetInteger("animState", (int)AnimState.dashing);
                     dashspeed = 50f;
                 }
-            }
-            if(sidedashdur > 0)
+            }else
+
+
+            if (sidedashdur > 0)
             {
-               
-                rb.velocity = new Vector2(dirX * dashspeed, -50f);
 
-                    dashspeed += 300f*Time.deltaTime;
+                if(downDashbullSummCD < 0)
+                {
+                    Vector2 p1 = new Vector2(rb.position.x, rb.position.y + 5);
+                    Vector2 p2 = new Vector2(rb.position.x, rb.position.y - 5);
 
-                if(sidedashdur < 0.2f)
+
+                    b1Atkscr bull1 = Instantiate(bossproj, p1, Quaternion.identity).GetComponent<b1Atkscr>();
+                    b1Atkscr bull2 = Instantiate(bossproj, p2, Quaternion.identity).GetComponent<b1Atkscr>();
+                    bull1.ydir = 1;
+                    bull2.ydir = -1;
+                    bull1.xdir = 0;
+                    bull2.xdir = 0;
+
+                    bull1.GetComponent<BoxCollider2D>().enabled = true;
+                    bull2.GetComponent<BoxCollider2D>().enabled = true;
+
+
+
+                    bull1.speed = 75 + 25f * UnityEngine.Random.Range(1f, 2f);
+                    bull2.speed = 75 + 25f * UnityEngine.Random.Range(1f, 2f);
+                    bull2.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f);
+                    bull1.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f);
+
+                    downDashbullSummCD = 0.05f;
+                }
+
+                downDashbullSummCD -= Time.deltaTime;   
+
+
+                rb.velocity = new Vector2(dirX * dashspeed, 0f);
+
+
+                if (sidedashdur < 0.3f)
                 {
                     anim.SetInteger("animState", (int)AnimState.idle);
-
-                    dashspeed -= 1000f * Time.deltaTime;    
-
+                    dashspeed -= 200f * Time.deltaTime;
+                }
+                else
+                {
+                    dashspeed += 350f * Time.deltaTime;
                 }
 
                 sidedashdur -= Time.deltaTime;
@@ -849,14 +894,14 @@ public class SwordMasterMovement : MonoBehaviour
                 anim.SetInteger("animState", (int)AnimState.idle);
 
 
-                rb.velocity = new Vector2(0, rb.velocity.y); 
+                rb.velocity = new Vector2(0, rb.velocity.y);
                 downdashdur = 0.5f;
                 tped = false;
-                sidedashdur = 0.7f;
+                sidedashdur = 1.2f;
             }
-        
+        }
     }
-            */
+            
 
 
     void hopBack()

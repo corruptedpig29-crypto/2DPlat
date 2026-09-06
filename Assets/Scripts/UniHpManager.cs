@@ -26,7 +26,7 @@ public class UniHpManager : MonoBehaviour
 
         if(GetComponent<SwordMasterMovement>()!= null)
         {
-            hp = 30;
+            hp = 50;
         }
 
 
