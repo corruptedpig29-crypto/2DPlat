@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Cherry
+  - Trap
+  - Attack
+  - Teleport
+  - Monster
+  - Projectile
+  - Wall
+  - colfloor
+  - CanBreakWall
+  - gpoint
+  - Boss
+  - DoubleDamage
+  - EnemyAttackNoEnergy
+  - WallOverlapDamage
+  - damageColl
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - DamageLayer
+  - Water
+  - UI
+  - Ground
+  - Projectile
+  - Enemy
+  - Player
+  - Trap
+  - PlayerAttack
+  - GrapplePoints
+  - EnemySword
+  - ProjGround
+  - HookLayer
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 555842593
+    locked: 0
+  - name: BehindProj
+    uniqueID: 804623193
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Terrain
+    uniqueID: 1850582045
+    locked: 0
+  - name: Foreground
+    uniqueID: 828854005
+    locked: 0
