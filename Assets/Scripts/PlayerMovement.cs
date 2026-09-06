@@ -15,7 +15,7 @@ using static UnityEditor.PlayerSettings;
 
 public class PlayerMovement : MonoBehaviour
 {
-    float initWallJumpDuration = 0.5f;
+    float initWallJumpDuration = 0.5f / 5f;
 
     public Boolean isGrounded;
     public float dirForParryKbVert = 0f;
@@ -36,8 +36,9 @@ public class PlayerMovement : MonoBehaviour
 
     //public int attackDir = 0;
 
+    float initDashDur = 0.375f * 7/12f;
 
-    
+
     public float dirY;
     bool justdashed = false;
 
@@ -73,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     public float MoveBufferTimer = 0.1f;
-    public float hittimer = 300 / 80;
+    public float hittimer = 300 / 80 / 7.5f;
     private float PlayerX;
     private float dashamountup = 0f; //magic number to cancel out the gravity shifting him into the ground for some reason
     private float PlayerY;
@@ -82,22 +83,21 @@ public class PlayerMovement : MonoBehaviour
     public Boolean dashing = false;
     public Boolean dashable = true;
     private attack attack;
-    private float jumpdur = -100 / 80;
+    private float jumpdur = -100f / 80;
     private float dashspeed;
     public float acd = 0;
-    [SerializeField] public float dcd = 30 / 80;
+    [SerializeField] public float dashDur = 0f;
     grapplehook ghook;
     PlayerEnergyControl pec;
-    float scalar = 5f;
 
-    BoxCollider2D playerlifecollider;
+    BoxCollider2D dcollCollider;
 
 
     float timertobeginrun = 0.1f;
 
     // Start is called before the first frame update
     [SerializeField] GameObject TPP;
-    public float fcd = 0;
+    //public float fcd = 0;
     [SerializeField] public float dirX = 0f;
     public float mostrecdirX = 1;
     [SerializeField]private float walljumpdurationleft = 0 / 80;
@@ -140,17 +140,16 @@ public class PlayerMovement : MonoBehaviour
         sprite.flipY = false;
 
 
-        playerlifecollider = damagecoll.GetComponent<BoxCollider2D>();
+        dcollCollider = damagecoll.GetComponent<BoxCollider2D>();
         sprite.flipX = false;
 
-        coll.isTrigger = false;
+        //coll.isTrigger = false;
 
         filter.useTriggers = false;
 
 
         dashing = false;
-        dcd = 0;
-        coll.isTrigger = false;
+        dashDur = 0;
 
         pushbackamt = 60f;
 
@@ -164,6 +163,8 @@ public class PlayerMovement : MonoBehaviour
 
     String prev = "";
 
+
+    bool firstFrameStartDash = false;
     void Update()
     {
         callAllgrndIrrel();
@@ -198,14 +199,21 @@ public class PlayerMovement : MonoBehaviour
         updlastloccd--;
         IsGrounded();
 
+        Debug.Log(damagecoll.cd);
 
-        
 
+        if (firstFrameStartDash)
+        {
+            firstFrameStartDash = false;
+            if(damagecoll.cd < dashDur)
+            {
+                damagecoll.cd = dashDur;
+            }
+        }
 
         if (dashing)
         {
             rb.velocity = new Vector2(dashspeed, dashamountup * 25/18);
-            playerlifecollider.isTrigger = true;
             if (IsGrounded())  justdashed = true;
             timerPostDashForGenericDashAttack = 0.15f;
         }
@@ -278,16 +286,16 @@ public class PlayerMovement : MonoBehaviour
 
 
         acd += Time.deltaTime;
-        fcd += 1 * Time.deltaTime * scalar;
-        dcd -= 2 * Time.deltaTime * scalar;
-        walljumpdurationleft -= 1 * Time.deltaTime * scalar;
+        //fcd += Time.deltaTime * 5f;
+        dashDur -= Time.deltaTime;
+        walljumpdurationleft -=  Time.deltaTime;
 
-        hittimer -= 1.5f*Time.deltaTime*scalar;
+        hittimer -= Time.deltaTime;
 
 
-        if((OnLWall() || OnRWall()) && walljumpdurationleft < 0.1f )
+        if((OnLWall() || OnRWall()) && walljumpdurationleft < 0.1f / 5f )
         {
-            walljumpdurationleft = -1f;
+            walljumpdurationleft = -1f / 5f;
         }
 
 
@@ -355,7 +363,7 @@ public class PlayerMovement : MonoBehaviour
             if (IsGrounded())
             {
                 rb.velocity = new Vector2(rb.velocity.x, jforcemult * jumpforce * 1.5f);
-                jumpdur = 5/8;
+                jumpdur = 5f/8;
             }else if (OnLWall())
             {
                 walljumpdurationleft = initWallJumpDuration;
@@ -426,7 +434,7 @@ public class PlayerMovement : MonoBehaviour
                 mostrecdirX = 1;
                 dirX = 1;
                 rb.velocity = new Vector2(mostrecdirX * dashspeed, dashamountup);
-                dcd = 300 / 80;
+                dashDur = initDashDur;
                 
             }
             else if(OnRWall()) {
@@ -435,20 +443,22 @@ public class PlayerMovement : MonoBehaviour
                 mostrecdirX = -1;
                 dirX = -1;
                 rb.velocity = new Vector2(mostrecdirX * dashspeed, dashamountup);
-                dcd = 300 / 80;
+                dashDur = initDashDur;
 
             }
             else if (dashable == true || IsGrounded())
             {
-                if (dcd < -145 / 80)
+                if (dashDur < -145f / 80 / 10)
                 {
-                    dcd = 300 / 80;
+                    dashDur = initDashDur;
                     dashing = true;
                     rb.velocity = new Vector2(mostrecdirX * dashspeed, dashamountup * 25/18);
                     dashable = false;
 
                 }
             }
+
+            firstFrameStartDash = true;
 
 
 
@@ -463,7 +473,7 @@ public class PlayerMovement : MonoBehaviour
         {
 
             rb.velocity = new Vector2(rb.velocity.x, jforcemult * jumpforce * 25/18);
-            jumpdur -= Time.deltaTime * scalar * 7f;
+            jumpdur -= Time.deltaTime * 35f;
 
 
         }
@@ -541,7 +551,6 @@ public class PlayerMovement : MonoBehaviour
 
         grappletimer -=Time.deltaTime;
 
-        //Debug.Log(grappletimer);
 
 
 
@@ -596,14 +605,14 @@ public class PlayerMovement : MonoBehaviour
         if (beinghit)
         {
             grappling = false;
-            playerlifecollider.isTrigger = true;
+            dcollCollider.isTrigger = true;
             rb.velocity = new Vector2(movespeed * 2 * dirhitfrom, movespeed * 25/18);
             justdashed = false;
             parrybdur = -1;
             dashing = false;
             fastRunning = false;
             attack.attackbegan = false;
-            walljumpdurationleft = -1f;
+            walljumpdurationleft = -1f / 5f;
 
 
            
@@ -623,10 +632,12 @@ public class PlayerMovement : MonoBehaviour
             beinghit = false;
         }
 
+        /*
         if(damagecoll.cd > 0)
         {
-            playerlifecollider.isTrigger = true;
+            dcollCollider.isTrigger = true;
         }
+        */
 
 
 
@@ -636,7 +647,6 @@ public class PlayerMovement : MonoBehaviour
         
         if (atkkbdur > 0)
         {
-            //Debug.Log(dirpushedvertonhit);
 
             if (dirpushedhorizonhit !=0 )rb.velocity = new Vector2( pushbackamt* dirpushedhorizonhit * 1f, rb.velocity.y);
 
@@ -644,7 +654,6 @@ public class PlayerMovement : MonoBehaviour
 
             if(dirpushedvertonhit > 0)
             {
-                //Debug.Log("Hello");
                 djavail = true;
             }
 
@@ -665,20 +674,17 @@ public class PlayerMovement : MonoBehaviour
             if(dirForParryKbVert == 0)rb.velocity = new Vector2(movespeed * 2.75f * dirParriedFrom, rb.velocity.y);
             if (dirForParryKbVert != 0) rb.velocity = new Vector2(movespeed * 2.75f * dirParriedFrom, 6f * dirForParryKbVert * movespeed);
 
-            //Debug.Log(dirParriedFrom);
         }
 
 
 
         if(parrybdur < 0 && !parryhopresetted)
         {
-            //Debug.Log("hello, we reset");
             if(dirForParryKbVert != 0) dashable = true; djavail = true;
             dirForParryKbVert = 0;
             dirParriedFrom = 0;
             parryhopresetted = true;
 
-            //rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y / 2);
         }   
 
 
@@ -689,15 +695,16 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        if (dcd <= 1 && dashing)
+        if (dashDur <= 1 / 10 && dashing)
         {
             dashing = false;
             //if (!damageScript.parryFlourishing && !beinghit) damagecoll.isTrigger = false;
         }
 
-        if(!damagecoll.parryFlourishing && !beinghit && !dashing && damagecoll.cd < 0) playerlifecollider.isTrigger = false;
 
-        //Debug.Log(beinghit);
+        //CHANGED HERE
+        //if(!damagecoll.parryFlourishing && !beinghit && !dashing && damagecoll.cd < 0) dcollCollider.isTrigger = false;
+
 
 
 

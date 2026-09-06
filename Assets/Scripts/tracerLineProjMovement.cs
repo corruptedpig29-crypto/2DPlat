@@ -30,9 +30,11 @@ public class tracerLineProjMovement : MonoBehaviour
 
 
     float timerSinceBegan = 0f;
+    float tiemrToDestroyAfterDetection = 0.03f;
+    bool beginDestroyTimer = false; 
     void Start()
     {
-
+        beginDestroyTimer = false;
 
         timerSinceBegan = 0f;
 
@@ -54,8 +56,16 @@ public class tracerLineProjMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(beginDestroyTimer)
+        {
+            tiemrToDestroyAfterDetection -= Time.deltaTime;
+            if(tiemrToDestroyAfterDetection < 0f)
+            {
+                Destroy(this.gameObject);
+            }
+        }
 
-            if (!begin)
+        if (!begin)
         {
             return;
         }
@@ -111,18 +121,13 @@ public class tracerLineProjMovement : MonoBehaviour
     }
 
     //FIX THIS, ADAPT SO THAT ALL PROJECTILES WORK EVEN WHEN THE COLLIDER IS A TRIGGER AT ALL TIMES.
-
+    
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.CompareTag("Wall"))
         {
-            Destroy(gameObject);
-        }
-
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            playerhitbox.manualTakeDamage(rb.position.x,1);
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            beginDestroyTimer = true;
         }
     }
 }

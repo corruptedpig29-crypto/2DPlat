@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -46,10 +47,12 @@ public class dcoll : MonoBehaviour
 
         findz = FindObjectOfType<PlayerMovement>();
 
+        coll.isTrigger = true;
         initparryflourishtimer = 0.35f;
     }
     private void Update()
-    {        
+    {
+        parryFlourishCD -= Time.deltaTime;
 
         /*
         Debug.Log("Parry Timer : "  + parrytimer);
@@ -100,7 +103,7 @@ public class dcoll : MonoBehaviour
         if (parryFlourishing)
         {
             numTimesParriedInLast = 0;
-            coll.isTrigger = true;
+            //coll.isTrigger = true;
         }
 
         /*
@@ -115,7 +118,7 @@ public class dcoll : MonoBehaviour
         if (parryFlourishTimer < 0 && parryFlourishing)
         {
             parryFlourishing = false;
-            coll.isTrigger = false;
+            //coll.isTrigger = false;
         }
 
 
@@ -161,29 +164,62 @@ public class dcoll : MonoBehaviour
             {
                 findz.beinghit = true;
                 findz.dirhitfrom = -1;
-                findz.hittimer = 300 / 80;
+                findz.hittimer = 300 / 80 / 7.5f;
 
             }
             else
             {
                 findz.beinghit = true;
                 findz.dirhitfrom = 1;
-                findz.hittimer = 300 / 80;
+                findz.hittimer = 300 / 80 / 7.5f;
             }
         }
     }
 
+    static float initParryFlourishCD = 0.5f;
 
-    private void OnCollisionStay2D(Collision2D collision)
+    float parryFlourishCD = initParryFlourishCD;
+
+    private void OnTriggerStay2D(Collider2D collision)
     {
 
 
-        Rigidbody2D temp = collision.rigidbody;
-        if ((collision.gameObject.CompareTag("Projectile") || collision.gameObject.CompareTag("Monster")) && !collision.collider.tag.Equals("DoubleDamage") || collision.gameObject.CompareTag("EnemyAttackNoEnergy"))
+        Rigidbody2D temp = collision.GetComponent<Rigidbody2D>();
+        if ((collision.gameObject.CompareTag("Projectile") || collision.gameObject.CompareTag("Monster")) || collision.GetComponent<BoxCollider2D>().tag.Equals("DoubleDamage") || collision.gameObject.CompareTag("EnemyAttackNoEnergy"))
         {
 
+            //Debug.Log("Detected ");
+            if (parryFlourishing)
+            {
+                if(parryFlourishCD >= 0)
+                {
+                    return;
+                }
+                else
+                {
+                    parryFlourishCD = initParryFlourishCD;
+                    source.PlayOneShot(parrySound);
 
-            if (parryFlourishing) return;
+                    findz.parrybdur = initparryflourishtimer / 2;
+                    findz.dirParriedFrom = -1 * (int)Mathf.Sign(collision.gameObject.GetComponent<Transform>().position.x - rb.position.x);
+
+                    if (findz.isGrounded) findz.dirForParryKbVert = 0;
+                    if (!findz.isGrounded) findz.dirForParryKbVert = 1;
+
+                    if (findz.dirParriedFrom == 0)
+                    {
+                        findz.dirParriedFrom = UnityEngine.Random.Range(0, 2) * 2 - 1;
+                    }
+
+                    parrying = false;
+                    parryFlourishing = true;
+                    parryFlourishTimer = initparryflourishtimer;
+
+                    coll.isTrigger = true;
+                }
+                return;
+            }
+
 
             if (parrying)
 
@@ -200,6 +236,9 @@ public class dcoll : MonoBehaviour
                 {
                     findz.dirParriedFrom = UnityEngine.Random.Range(0, 2) * 2 - 1;
                 }
+
+                parryFlourishCD = initParryFlourishCD;
+
 
                 parrying = false;
                 parryFlourishing = true;
@@ -218,22 +257,30 @@ public class dcoll : MonoBehaviour
                 source.PlayOneShot(clip);
 
                 cd = cdtimer;
+                if (collision.gameObject.tag.Equals("DoubleDamage"))
+                {
+                    hp -= 2;
+                }
+                else
+                {
+                    hp--;
 
-                hp--;
+                }
 
-                
+
+
                 if (collision.gameObject.GetComponent<Transform>().position.x > rb.position.x)
                 {
                     findz.beinghit = true;
                     findz.dirhitfrom = -1;
-                    findz.hittimer = 300 / 80;
+                    findz.hittimer = 300 / 80 / 7.5f;
 
                 }
                 else
                 {
                     findz.beinghit = true;
                     findz.dirhitfrom = 1;
-                    findz.hittimer = 300 / 80;
+                    findz.hittimer = 300 / 80 / 7.5f;
                 }
             }
 
@@ -241,14 +288,15 @@ public class dcoll : MonoBehaviour
 
         }
 
-        if(collision.collider.tag.Equals("DoubleDamage"))
+        if(collision.GetComponent<BoxCollider2D>().tag.Equals("DoubleDamage"))
         {
-
+            /*
             if (parrying)
 
             {
                 source.PlayOneShot(parrySound);
 
+                parryFlourishCD = 0.5f;
 
                 findz.parrybdur = initparryflourishtimer / 2;
                 findz.dirParriedFrom = -1 * (int)Mathf.Sign(collision.gameObject.GetComponent<Transform>().position.x - rb.position.x);
@@ -269,6 +317,7 @@ public class dcoll : MonoBehaviour
 
                 return;
             }
+            
 
 
 
@@ -279,20 +328,21 @@ public class dcoll : MonoBehaviour
 
                 cd = cdtimer;
                 hp-=2;
-                if (collision.gameObject.GetComponent<Rigidbody2D>().position.x > rb.position.x)
+                if (collision.gameObject.transform.position.x > rb.position.x)
                 {
                     findz.beinghit = true;
                     findz.dirhitfrom = -1;
-                    findz.hittimer = 300 / 80;
+                    findz.hittimer = 300 / 80 / 7.5f;
 
                 }
                 else
                 {
                     findz.beinghit = true;
                     findz.dirhitfrom = 1;
-                    findz.hittimer = 300 / 80;
+                    findz.hittimer = 300 / 80 / 7.5f;
                 }
             }
+            */
         }
 
 

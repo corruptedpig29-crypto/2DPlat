@@ -167,7 +167,7 @@ public class SMSpecialAttack : MonoBehaviour
         timer += Time.deltaTime;
         if (dex < notes.Length - 2)
         {
-            Debug.Log(timer);
+            //Debug.Log(timer);
             if (timer > (notes[dex] - 44576) / 1000 - 0.15f && timer < (notes[dex + 1] - 44576) / 1000 - 0.15f)
             {
                 source.volume = 0.3f;
@@ -180,7 +180,7 @@ public class SMSpecialAttack : MonoBehaviour
                 proj.GetComponent<BoxCollider2D>().enabled = false;
                 proj.GetComponent<tracerLineProjMovement>().begin = true;
                 proj.GetComponent<tracerLineProjMovement>().waitTimer = 0.15f;
-                proj.GetComponent<tracerLineProjMovement>().speed = 750f;
+                proj.GetComponent<tracerLineProjMovement>().speed = 500f;
                 proj.GetComponent<tracerLineProjMovement>().accel = 1000;
 
                 dex++;

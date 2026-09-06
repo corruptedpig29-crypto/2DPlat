@@ -31,7 +31,7 @@ public class sliceGhost : MonoBehaviour
         began = false;
         
         sprite.enabled = false;
-        coll.enabled = true;
+        coll.enabled = false;
         coll.isTrigger = true;
     }
 
@@ -39,14 +39,9 @@ public class sliceGhost : MonoBehaviour
     void Update()
     {
 
-        if (!coll.isTrigger)
-        {
-            coll.isTrigger = true;
-            Debug.Log("hello");
-        }
 
 
-        coll.isTrigger = true;
+
 
 
         if (begin)
@@ -69,12 +64,12 @@ public class sliceGhost : MonoBehaviour
             fadeOut();
         }
 
-
     }
 
     public void fill()
     {
         began = true;
+        coll.enabled = true;
         anim.SetInteger("state", (int)AnimState.fill);
     }
 

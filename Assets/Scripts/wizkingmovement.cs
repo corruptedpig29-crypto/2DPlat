@@ -548,9 +548,10 @@ public class wizkingmovement : MonoBehaviour
             Vector2 pos = new Vector2(rb.position.x + dirX*5, rb.position.y-3f + trackerbeamprojnum * 2); 
             TrackerOrbController z = Instantiate(trackerorb,rb.position,Quaternion.identity).GetComponent<TrackerOrbController>();
             z.speed = 10f + UnityEngine.Random.Range(0, 10) * 10f;
-            z.accelrate = 600f + UnityEngine.Random.Range(-10,10) * 20f;
+            z.accelrate = 1000f + UnityEngine.Random.Range(-10,10) * 20f;
             Vector2 directionToPlayer = new Vector2((findz.rb.position.x - rb.position.x), (findz.rb.position.y - rb.position.y) + UnityEngine.Random.Range(-5,5) * 30 ).normalized;
             z.initdir = directionToPlayer;
+            z.rotateShiftMagnitude = 20f + UnityEngine.Random.Range(2,5) * 10f;
 
         }
     }

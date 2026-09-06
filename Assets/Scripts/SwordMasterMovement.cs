@@ -255,7 +255,9 @@ public class SwordMasterMovement : MonoBehaviour
             {
                 runspeedincrease = 0f;
 
-                if(GetComponent<UniHpManager>().hp < 100 && !specialAttackBegan)
+                
+
+                if(GetComponent<UniHpManager>().hp < 50 && !specialAttackBegan)
                 {
                     val = 0;
                     GetComponent<SMSpecialAttack>().beginAttack = true;
@@ -657,15 +659,27 @@ public class SwordMasterMovement : MonoBehaviour
 
                 Vector2 direction = new Vector2(dirX, 0f);
                 ContactFilter2D filter = new ContactFilter2D();
-                filter.useLayerMask = true;
-                filter.layerMask = LayerMask.GetMask("Enemy");
+                filter.SetLayerMask(LayerMask.GetMask(layerNames));
+                filter.useTriggers = true; // this makes it hit triggers
+
+                RaycastHit2D[] results = new RaycastHit2D[1];
+                int count = Physics2D.BoxCast(rb.position, boxsize, 0f, direction, filter, results, dashdist);
+                RaycastHit2D z = count > 0 ? results[0] : default;
+
+                ContactFilter2D filter2 = new ContactFilter2D();
+                filter2.SetLayerMask(LayerMask.GetMask(layerNames2));
+                filter2.useTriggers = true;
+
+                RaycastHit2D[] results2 = new RaycastHit2D[1];
+                int count2 = Physics2D.BoxCast(rb.position, boxsize, 0f, direction, filter2, results2, dashdist);
+                RaycastHit2D pz = count2 > 0 ? results2[0] : default;
 
 
 
 
-                RaycastHit2D z = Physics2D.BoxCast(rb.position, boxsize, 0f, direction, dashdist, LayerMask.GetMask(layerNames));
+                //RaycastHit2D z = Physics2D.BoxCast(rb.position, boxsize, 0f, direction, dashdist, LayerMask.GetMask(layerNames));
 
-                RaycastHit2D pz = Physics2D.BoxCast(rb.position, boxsize, 0f, direction, dashdist, LayerMask.GetMask(layerNames2));
+                //RaycastHit2D pz = Physics2D.BoxCast(rb.position, boxsize, 0f, direction, dashdist, LayerMask.GetMask(layerNames2));
 
 
                 Debug.DrawRay(rb.position, direction);
