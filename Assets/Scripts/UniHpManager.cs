@@ -34,6 +34,7 @@ public class UniHpManager : MonoBehaviour
         {
             hp = 30;
         }
+
         if(gameObject.name == "Circle")
         {
             hp = 50000;

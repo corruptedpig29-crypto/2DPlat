@@ -140,7 +140,7 @@ public class dcoll : MonoBehaviour
             
             source.PlayOneShot(parrySound);
 
-            findz.parrybdur = initparryflourishtimer / 2;
+            findz.parrybdur = initparryflourishtimer * 0.6f;
             findz.dirParriedFrom = -1 * (int)Mathf.Sign(xposDamage - rb.position.x);
             if (findz.isGrounded) findz.dirForParryKbVert = 0;
             if (!findz.isGrounded) findz.dirForParryKbVert = 1;
@@ -200,7 +200,7 @@ public class dcoll : MonoBehaviour
                     parryFlourishCD = initParryFlourishCD;
                     source.PlayOneShot(parrySound);
 
-                    findz.parrybdur = initparryflourishtimer / 2;
+                    findz.parrybdur = initparryflourishtimer * 0.6f;
                     findz.dirParriedFrom = -1 * (int)Mathf.Sign(collision.gameObject.GetComponent<Transform>().position.x - rb.position.x);
 
                     if (findz.isGrounded) findz.dirForParryKbVert = 0;
@@ -226,7 +226,7 @@ public class dcoll : MonoBehaviour
             {
                 source.PlayOneShot(parrySound);
 
-                findz.parrybdur = initparryflourishtimer / 2;
+                findz.parrybdur = initparryflourishtimer * 0.6f;
                 findz.dirParriedFrom = -1 * (int)Mathf.Sign(collision.gameObject.GetComponent<Transform>().position.x - rb.position.x);
 
                 if (findz.isGrounded) findz.dirForParryKbVert = 0;

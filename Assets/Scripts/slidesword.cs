@@ -59,10 +59,5 @@ public class slidesword : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
-        {
-            playerHP.manualTakeDamage(rb.position.x, 1);
-
-        }
     }
 }

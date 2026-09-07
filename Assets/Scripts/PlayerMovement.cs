@@ -167,6 +167,9 @@ public class PlayerMovement : MonoBehaviour
     bool firstFrameStartDash = false;
     void Update()
     {
+
+        Debug.Log("ParryBDUR : " + parrybdur);
+
         callAllgrndIrrel();
         isGrounded = IsGrounded();
         if ((OnLWall() || OnRWall() ) && !IsGrounded())
@@ -199,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
         updlastloccd--;
         IsGrounded();
 
-        Debug.Log(damagecoll.cd);
+        //Debug.Log(damagecoll.cd);
 
 
         if (firstFrameStartDash)
@@ -620,7 +623,6 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-        
 
 
 

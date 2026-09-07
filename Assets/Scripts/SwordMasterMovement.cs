@@ -257,7 +257,7 @@ public class SwordMasterMovement : MonoBehaviour
 
                 
 
-                if(GetComponent<UniHpManager>().hp < 50 && !specialAttackBegan)
+                if(GetComponent<UniHpManager>().hp < 1 && !specialAttackBegan)
                 {
                     val = 0;
                     GetComponent<SMSpecialAttack>().beginAttack = true;
@@ -827,14 +827,11 @@ public class SwordMasterMovement : MonoBehaviour
     }
 
 
-    float downDashbullSummCD = 0.05f;
+    float downDashbullSummCD = 0.005f;
     void downDash()
     {
 
-        Debug.Log(dirX);
-        Debug.Log("DownDashDur : " + downdashdur);
-        Debug.Log("SideDashDur : " + sidedashdur);
-        Debug.Log("dashSpeed : " + dashspeed);
+
 
         if (!tped)
         {
@@ -886,7 +883,32 @@ public class SwordMasterMovement : MonoBehaviour
                     bull2.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f);
                     bull1.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f);
 
-                    downDashbullSummCD = 0.05f;
+
+
+                    Vector2 p3 = new Vector2(rb.position.x - dirX * 75f, rb.position.y + 5);
+                    Vector2 p4 = new Vector2(rb.position.x - dirX * 75f, rb.position.y - 5);
+
+
+                    b1Atkscr bull3 = Instantiate(bossproj, p3, Quaternion.identity).GetComponent<b1Atkscr>();
+                    b1Atkscr bull4 = Instantiate(bossproj, p4, Quaternion.identity).GetComponent<b1Atkscr>();
+                    bull3.ydir = 1;
+                    bull4.ydir = -1;
+                    bull3.xdir = 0;
+                    bull4.xdir = 0;
+
+                    bull3.GetComponent<BoxCollider2D>().enabled = true;
+                    bull4.GetComponent<BoxCollider2D>().enabled = true;
+
+
+
+                    bull3.speed = 75 + 25f * UnityEngine.Random.Range(1f, 2f);
+                    bull4.speed = 75 + 25f * UnityEngine.Random.Range(1f, 2f);
+                    bull3.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f);
+                    bull4.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f);
+
+
+
+                    downDashbullSummCD = 0.005f;
                 }
 
                 downDashbullSummCD -= Time.deltaTime;   
