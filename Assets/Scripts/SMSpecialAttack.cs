@@ -149,7 +149,6 @@ public class SMSpecialAttack : MonoBehaviour
 
     }
     List<GameObject> projList = new List<GameObject>();
-
     // Update is called once per frame
     void Update()
     {
@@ -168,27 +167,42 @@ public class SMSpecialAttack : MonoBehaviour
         if (dex < notes.Length - 2)
         {
             //Debug.Log(timer);
-            if (timer > (notes[dex] - 44576) / 1000 - 0.15f && timer < (notes[dex + 1] - 44576) / 1000 - 0.15f)
+            if (timer > (notes[dex] - 44576) / 1000 - wtimer && timer < (notes[dex + 1] - 44576) / 1000 - wtimer)
             {
                 source.volume = 0.3f;
 
-                GameObject proj = Instantiate(tracerLineProj, new Vector2(findZ.transform.position.x + UnityEngine.Random.Range(-100f, 100f), findZ.transform.position.y + 100f), Quaternion.identity);
-                float angleToPlayer = Mathf.Atan2(-(proj.transform.position.y - findZ.transform.position.y), -(proj.transform.position.x - findZ.transform.position.x)) / Mathf.PI * 180;
+                float xpos;
+
+                if(UnityEngine.Random.Range(0, 2) == 0)
+                {
+                    xpos = findZ.transform.position.x + UnityEngine.Random.Range(-75f, -50f);
+                }
+                else
+                {
+                    xpos = findZ.transform.position.x + UnityEngine.Random.Range(50f, 75f);
+                }
+                GameObject proj = Instantiate(tracerLineProj, new Vector2(xpos, findZ.transform.position.y + 50f), Quaternion.identity);
+                float angleToPlayer = Mathf.Atan2(-(proj.transform.position.y - (findZ.transform.position.y)), -(proj.transform.position.x - findZ.transform.position.x)) / Mathf.PI * 180;
 
                 proj.GetComponent<tracerLineProjMovement>().degreeOfRotation = angleToPlayer;
                 proj.GetComponent<SpriteRenderer>().enabled = false;
                 proj.GetComponent<BoxCollider2D>().enabled = false;
                 proj.GetComponent<tracerLineProjMovement>().begin = true;
-                proj.GetComponent<tracerLineProjMovement>().waitTimer = 0.15f;
-                proj.GetComponent<tracerLineProjMovement>().speed = 500f;
-                proj.GetComponent<tracerLineProjMovement>().accel = 1000;
-
+                proj.GetComponent<tracerLineProjMovement>().waitTimer = wtimer;
+                proj.GetComponent<tracerLineProjMovement>().speed = (proj.transform.position - findZ.transform.position).magnitude / wtimer;
+                proj.GetComponent<tracerLineProjMovement>().accel = 40;
                 dex++;
+
+
             }
+            while (timer >= (notes[dex + 1] - 44576) / 1000 - wtimer) dex++;
+
         }
 
 
 
         //Debug.Log("hello");
     }
+    float wtimer = 0.35f;
+
 }

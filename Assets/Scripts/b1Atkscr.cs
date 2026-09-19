@@ -13,7 +13,7 @@ public class b1Atkscr : MonoBehaviour
     private BoxCollider2D coll;
     // Start is called before the first frame update
 
-    float deletetimer = 8f;
+    float deletetimer = 4f;
     public float accelrate = 0f;
     float radtodeg = 360 / (2 * (float)PI);
 
@@ -80,7 +80,7 @@ public class b1Atkscr : MonoBehaviour
 
         rb.velocity = new Vector2(speed * xdir, speed * ydir);
         speed += accelrate * Time.deltaTime;
-        if(timerSinceInitialization > 5f)
+        if(timerSinceInitialization > 3f)
         {
             Destroy(this.gameObject);
         }

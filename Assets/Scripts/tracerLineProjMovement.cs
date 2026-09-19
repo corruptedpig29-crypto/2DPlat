@@ -56,14 +56,6 @@ public class tracerLineProjMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(beginDestroyTimer)
-        {
-            tiemrToDestroyAfterDetection -= Time.deltaTime;
-            if(tiemrToDestroyAfterDetection < 0f)
-            {
-                Destroy(this.gameObject);
-            }
-        }
 
         if (!begin)
         {
@@ -118,6 +110,30 @@ public class tracerLineProjMovement : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+
+        string[] layerNames2 = { "Player" };
+        Vector2 boxsize = new Vector2(coll.bounds.size.x, coll.bounds.size.y);
+        float dashdist = 50f;
+
+        Vector2 direction = new Vector2(0f, 0f);
+
+        ContactFilter2D filter2 = new ContactFilter2D();
+        filter2.SetLayerMask(LayerMask.GetMask(layerNames2));
+        filter2.useTriggers = true;
+
+        RaycastHit2D[] results2 = new RaycastHit2D[1];
+        int count2 = Physics2D.BoxCast(transform.position, boxsize, transform.rotation.z, direction, filter2, results2, dashdist);
+        RaycastHit2D pz = count2 > 0 ? results2[0] : default;
+
+        if (pz.collider != null && pz.collider.gameObject != null)
+        {
+            if (pz.collider.gameObject.CompareTag("Player") && pz.collider.gameObject.GetComponentInChildren<dcoll>() != null)
+            {
+                pz.collider.gameObject.GetComponentInChildren<dcoll>().manualTakeDamage(transform.position.x, 1);
+                Destroy(this.gameObject);
+            }
+        }
     }
 
     //FIX THIS, ADAPT SO THAT ALL PROJECTILES WORK EVEN WHEN THE COLLIDER IS A TRIGGER AT ALL TIMES.
@@ -126,8 +142,8 @@ public class tracerLineProjMovement : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Wall"))
         {
-            //Destroy(gameObject);
-            beginDestroyTimer = true;
+            Destroy(gameObject);
+
         }
     }
 }

@@ -11,12 +11,14 @@ public class tracerProjLineControl : MonoBehaviour
     public float x2;
     public float y2;
     tracerLineProjMovement movement;
+    BoxCollider2D coll;
 
     // Start is called before the first frame update
     void Start()
     {
         lr = GetComponent<LineRenderer>();
         movement = GetComponent<tracerLineProjMovement>();
+        coll = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -47,7 +49,6 @@ public class tracerProjLineControl : MonoBehaviour
 
             }
 
-        
 
     }
 }

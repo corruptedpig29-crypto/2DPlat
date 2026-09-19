@@ -257,7 +257,7 @@ public class SwordMasterMovement : MonoBehaviour
 
                 
 
-                if(GetComponent<UniHpManager>().hp < 1 && !specialAttackBegan)
+                if(GetComponent<UniHpManager>().hp < 10 && !specialAttackBegan)
                 {
                     val = 0;
                     GetComponent<SMSpecialAttack>().beginAttack = true;
@@ -391,7 +391,7 @@ public class SwordMasterMovement : MonoBehaviour
                 bull2.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f);
                 bull1.accelrate = 75 + 100f * UnityEngine.Random.Range(1f, 2f); ;
 
-                bossprojshootcd = 0.015f;
+                bossprojshootcd = 0.05f;
             }
 
             bossprojshootcd -= Time.deltaTime;  
@@ -908,7 +908,7 @@ public class SwordMasterMovement : MonoBehaviour
 
 
 
-                    downDashbullSummCD = 0.005f;
+                    downDashbullSummCD = 0.05f;
                 }
 
                 downDashbullSummCD -= Time.deltaTime;   
