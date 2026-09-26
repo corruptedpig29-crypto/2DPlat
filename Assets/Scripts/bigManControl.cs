@@ -410,8 +410,12 @@ public class bigManControl : MonoBehaviour
     {
         if(gunTransformTimer == 5f)anim.SetInteger("state", 4);
 
-        
-        transform.Rotate(new Vector3(0, 0, rotSpeed * Time.deltaTime));
+
+
+        Vector2 actualDirectionToPlayer = new Vector2((player.rb.position.x - rb.position.x), (player.rb.position.y - rb.position.y)).normalized;
+
+        Vector2 directionToPlayer = new Vector2(-(player.rb.position.y - rb.position.y), (player.rb.position.x - rb.position.x)).normalized;
+
 
         rotSpeed += 150f * Time.deltaTime + rotSpeed * Time.deltaTime;
 
@@ -420,6 +424,38 @@ public class bigManControl : MonoBehaviour
         gunTransformTimer -= Time.deltaTime;
 
         transformWaitTimer -= Time.deltaTime;
+
+        if(transformWaitTimer < 0f)
+        {
+            for (int i = 0; i < 10f; i++)
+            {
+                float projDegree = UnityEngine.Random.Range(transform.eulerAngles.z - 30f, transform.eulerAngles.z + 30f);
+
+                GameObject proj = Instantiate(lineTracerProj, new Vector2(rb.position.x, rb.position.y) + directionToPlayer * 10, Quaternion.identity);
+                proj.GetComponent<tracerLineProjMovement>().degreeOfRotation = projDegree;
+
+
+
+                proj.GetComponent<SpriteRenderer>().enabled = false;
+                proj.GetComponent<BoxCollider2D>().enabled = false;
+                proj.GetComponent<tracerLineProjMovement>().begin = true;
+                proj.GetComponent<tracerLineProjMovement>().waitTimer = 0.01f;
+                projList.Add(proj.GetComponent<tracerLineProjMovement>());
+            }
+        }
+
+
+
+        float angleDifference = Vector2.SignedAngle(transform.up, directionToPlayer);
+
+        float rotateShiftMagnitude = rotSpeed;  
+
+        float rotationAmount = Mathf.Clamp(angleDifference, -rotateShiftMagnitude * Time.deltaTime, rotateShiftMagnitude * Time.deltaTime);
+
+
+
+
+        transform.Rotate(0, 0, rotationAmount);
 
         if (gunTransformTimer < 0f)
         {
