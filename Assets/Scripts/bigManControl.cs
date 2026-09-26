@@ -88,7 +88,10 @@ public class bigManControl : MonoBehaviour
             {
                 hammer();
             }
-
+            if(atknum == 4)
+            {
+                gunTransform();
+            }
 
         }
 
@@ -98,7 +101,7 @@ public class bigManControl : MonoBehaviour
             anim.SetInteger("state", 0);
 
 
-            atknum = UnityEngine.Random.Range(1, 4);
+            atknum = UnityEngine.Random.Range(1, 5);
 
             if (dirX > 0)
             {
@@ -398,6 +401,35 @@ public class bigManControl : MonoBehaviour
             HammerProjSummoned = false;
         }
     }
+
+    float transformWaitTimer = 0.2f;
+
+    float gunTransformTimer = 5f;
+    float rotSpeed = 40f;
+    void gunTransform()
+    {
+        if(gunTransformTimer == 5f)anim.SetInteger("state", 4);
+
+        
+        transform.Rotate(new Vector3(0, 0, rotSpeed * Time.deltaTime));
+
+        rotSpeed += 150f * Time.deltaTime + rotSpeed * Time.deltaTime;
+
+        rotSpeed = Mathf.Clamp(rotSpeed, 40f, 360f);    
+
+        gunTransformTimer -= Time.deltaTime;
+
+        transformWaitTimer -= Time.deltaTime;
+
+        if (gunTransformTimer < 0f)
+        {
+            transformWaitTimer = 0.2f;
+            gunTransformTimer = 5f;
+            lastatkended = true;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+    }
+    
 
     [SerializeField] private LayerMask ground;
 
