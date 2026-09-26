@@ -7,6 +7,8 @@ public class dangerOrb : MonoBehaviour
 
     [SerializeField] GameObject hsword;
 
+
+
     public float xleft, xright, ybot, ytop;
 
     Rigidbody2D rb;

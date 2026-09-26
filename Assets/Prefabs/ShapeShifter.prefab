@@ -74,6 +74,7 @@ MonoBehaviour:
   wall: {fileID: 6406374916578323697, guid: 93cc360a6ee07d741ab48438bc1bdb7e, type: 3}
   lineTracerProj: {fileID: 1352116298036878274, guid: 853db1e1fa60ef24ab1631eec239e336, type: 3}
   warningProj: {fileID: 4978399371739877650, guid: 3606d46307ae09046be7cc916a048f32, type: 3}
+  bossProjNoWarning: {fileID: 9061436182909101843, guid: 77568833ef8641c43a18be4b01201293, type: 3}
   ground:
     serializedVersion: 2
     m_Bits: 64

@@ -31,6 +31,8 @@ public class bigManControl : MonoBehaviour
     [SerializeField] GameObject lineTracerProj;
 
     [SerializeField] GameObject warningProj;
+    [SerializeField] GameObject bossProjNoWarning;
+
 
     Transform trans;
     bool lastatkended = false;
@@ -70,6 +72,7 @@ public class bigManControl : MonoBehaviour
 
         if (!lastatkended)
         {
+            //atknum = 4;
             if (atknum == 0)
             {
                 move();
@@ -97,20 +100,37 @@ public class bigManControl : MonoBehaviour
 
         if (lastatkended)
         {
+            
             rb.velocity = new Vector2(0, 0);
             anim.SetInteger("state", 0);
 
 
+            int mostRecAtknum = atknum;
+
             atknum = UnityEngine.Random.Range(1, 5);
 
-            if (dirX > 0)
+            while(atknum == mostRecAtknum)
+            {
+                atknum = UnityEngine.Random.Range(1, 5);
+            }
+
+
+            if(atknum != 4)
+            {
+                if (dirX > 0)
+                {
+                    transform.localScale = new Vector3(scale, scale, 1);
+                }
+                else if (dirX < 0)
+                {
+                    transform.localScale = new Vector3(-scale, scale, 1);
+                }
+            }
+            else
             {
                 transform.localScale = new Vector3(scale, scale, 1);
             }
-            else if (dirX < 0)
-            {
-                transform.localScale = new Vector3(-scale, scale, 1);
-            }
+
 
             if ((player.transform.position - transform.position).magnitude >= 75f)
             {
@@ -402,22 +422,26 @@ public class bigManControl : MonoBehaviour
         }
     }
 
-    float transformWaitTimer = 0.2f;
+    float transformWaitTimer = 0.7f;
 
-    float gunTransformTimer = 5f;
-    float rotSpeed = 40f;
+    float gunTransformTimer = 8f;
+    float rotSpeed = 80f;
+
+    float gunShootCD = 0.03f;
+    float quadraCD = 0.1f;
     void gunTransform()
     {
-        if(gunTransformTimer == 5f)anim.SetInteger("state", 4);
+        angle +=  Time.deltaTime;
+        if (gunTransformTimer == 8f)anim.SetInteger("state", 4);
 
-
+        gunShootCD-= Time.deltaTime;    
 
         Vector2 actualDirectionToPlayer = new Vector2((player.rb.position.x - rb.position.x), (player.rb.position.y - rb.position.y)).normalized;
 
         Vector2 directionToPlayer = new Vector2(-(player.rb.position.y - rb.position.y), (player.rb.position.x - rb.position.x)).normalized;
 
 
-        rotSpeed += 150f * Time.deltaTime + rotSpeed * Time.deltaTime;
+        rotSpeed += 10f * Time.deltaTime;
 
         rotSpeed = Mathf.Clamp(rotSpeed, 40f, 360f);    
 
@@ -425,23 +449,31 @@ public class bigManControl : MonoBehaviour
 
         transformWaitTimer -= Time.deltaTime;
 
-        if(transformWaitTimer < 0f)
+        if(transformWaitTimer < 0f && gunShootCD < 0f)
         {
-            for (int i = 0; i < 10f; i++)
-            {
-                float projDegree = UnityEngine.Random.Range(transform.eulerAngles.z - 30f, transform.eulerAngles.z + 30f);
-
-                GameObject proj = Instantiate(lineTracerProj, new Vector2(rb.position.x, rb.position.y) + directionToPlayer * 10, Quaternion.identity);
-                proj.GetComponent<tracerLineProjMovement>().degreeOfRotation = projDegree;
+            float projDegree = UnityEngine.Random.Range(transform.eulerAngles.z - 5f, transform.eulerAngles.z + 5f);
+            Debug.Log("Rotation : " + transform.eulerAngles.z);
+            GameObject proj = Instantiate(lineTracerProj, rb.position + Vector2.up*(float)Math.Sin(projDegree * Mathf.Deg2Rad +  Mathf.Deg2Rad * 13f) * 20f + Vector2.right*(float)Math.Cos(projDegree * Mathf.Deg2Rad +  Mathf.Deg2Rad * 13f) * 20f, Quaternion.identity);
+            proj.GetComponent<tracerLineProjMovement>().degreeOfRotation = projDegree;
 
 
 
-                proj.GetComponent<SpriteRenderer>().enabled = false;
-                proj.GetComponent<BoxCollider2D>().enabled = false;
-                proj.GetComponent<tracerLineProjMovement>().begin = true;
-                proj.GetComponent<tracerLineProjMovement>().waitTimer = 0.01f;
-                projList.Add(proj.GetComponent<tracerLineProjMovement>());
-            }
+            proj.GetComponent<SpriteRenderer>().enabled = false;
+            proj.GetComponent<BoxCollider2D>().enabled = false;
+            proj.GetComponent<tracerLineProjMovement>().begin = true;
+            proj.GetComponent<tracerLineProjMovement>().waitTimer = 0.01f;
+            projList.Add(proj.GetComponent<tracerLineProjMovement>());
+
+            gunShootCD = 0.03f;
+
+
+
+        }
+        quadraCD-= Time.deltaTime;
+        if(quadraCD < 0f && transformWaitTimer < 0f)
+        {
+            summonTheFour();
+            quadraCD = 0.1f;
         }
 
 
@@ -457,13 +489,53 @@ public class bigManControl : MonoBehaviour
 
         transform.Rotate(0, 0, rotationAmount);
 
+        
+
+
         if (gunTransformTimer < 0f)
         {
-            transformWaitTimer = 0.2f;
-            gunTransformTimer = 5f;
+            transformWaitTimer = 0.7f;
+            gunTransformTimer = 8f;
             lastatkended = true;
+            rotSpeed = 80f;
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
+    }
+
+    float angle = 0f;
+
+    void summonTheFour()
+    {
+
+        float projspeed = 75f;
+        float accelrate = 100f;
+        b1Atkscr p1 = Instantiate(bossProjNoWarning.gameObject, rb.position, Quaternion.identity).GetComponent<b1Atkscr>();
+        p1.xdir = Mathf.Sin(angle);
+        p1.ydir = Mathf.Cos(angle);
+        p1.speed = projspeed;
+        p1.accelrate = accelrate;
+
+        b1Atkscr p2 = Instantiate(bossProjNoWarning.gameObject, rb.position, Quaternion.identity).GetComponent<b1Atkscr>();
+        p2.xdir = -Mathf.Sin(angle);
+        p2.ydir = -Mathf.Cos(angle);
+        p2.speed = projspeed;
+        p2.accelrate = accelrate;
+
+        
+        b1Atkscr p3 = Instantiate(bossProjNoWarning.gameObject, rb.position, Quaternion.identity).GetComponent<b1Atkscr>();
+        p3.xdir = Mathf.Sin(angle * 2f + 3.14159265f / 2);
+        p3.ydir = Mathf.Cos(angle * 2f + 3.14159265f / 2);
+        p3.speed = projspeed;
+        p3.accelrate = accelrate;
+
+
+        /*
+        b1Atkscr p4 = Instantiate(bossProjNoWarning.gameObject, rb.position, Quaternion.identity).GetComponent<b1Atkscr>();
+        p4.xdir = -Mathf.Sin(angle + 3.14159265f / 2);
+        p4.ydir = -Mathf.Cos(angle + 3.14159265f / 2);
+        p4.speed = projspeed;
+        p4.accelrate = accelrate;
+        */
     }
     
 

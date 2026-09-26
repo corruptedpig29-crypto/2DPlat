@@ -156,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector2(0,0);
         Physics2D.queriesHitTriggers = false;
 
-        Debug.Log("Queries Hit Triggers : " + Physics2D.queriesHitTriggers);
+        //Debug.Log("Queries Hit Triggers : " + Physics2D.queriesHitTriggers);
     }
 
     // Update is called once per frame
@@ -168,7 +168,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-        Debug.Log("ParryBDUR : " + parrybdur);
+        //Debug.Log("ParryBDUR : " + parrybdur);
 
         callAllgrndIrrel();
         isGrounded = IsGrounded();
