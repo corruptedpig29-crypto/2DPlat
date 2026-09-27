@@ -187,9 +187,9 @@ public class dcoll : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
 
-
+        
         Rigidbody2D temp = collision.GetComponent<Rigidbody2D>();
-        if ((collision.gameObject.CompareTag("Projectile") || collision.gameObject.CompareTag("Monster")) || collision.GetComponent<BoxCollider2D>().tag.Equals("DoubleDamage") || collision.gameObject.CompareTag("EnemyAttackNoEnergy"))
+        if ((collision.gameObject.CompareTag("Projectile") || collision.gameObject.CompareTag("Monster")) || collision.GetComponent<Collider2D>().tag.Equals("DoubleDamage") || collision.gameObject.CompareTag("EnemyAttackNoEnergy"))
         {
 
             //Debug.Log("Detected ");
@@ -292,7 +292,7 @@ public class dcoll : MonoBehaviour
 
         }
 
-        if(collision.GetComponent<BoxCollider2D>().tag.Equals("DoubleDamage"))
+        if(collision.GetComponent<Collider2D>().tag.Equals("DoubleDamage"))
         {
             /*
             if (parrying)
