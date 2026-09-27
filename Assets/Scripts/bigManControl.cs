@@ -429,11 +429,16 @@ public class bigManControl : MonoBehaviour
 
     float gunShootCD = 0.03f;
     float quadraCD = 0.1f;
+    bool gunTransformed = false;
+    float fourGapCD = 1.5f;
     void gunTransform()
     {
         angle +=  Time.deltaTime;
-        if (gunTransformTimer == 8f)anim.SetInteger("state", 4);
-
+        if (!gunTransformed)
+        {
+            anim.SetInteger("state", 4);
+            gunTransformed = true;
+        }
         gunShootCD-= Time.deltaTime;    
 
         Vector2 actualDirectionToPlayer = new Vector2((player.rb.position.x - rb.position.x), (player.rb.position.y - rb.position.y)).normalized;
@@ -469,13 +474,18 @@ public class bigManControl : MonoBehaviour
 
 
         }
-        quadraCD-= Time.deltaTime;
-        if(quadraCD < 0f && transformWaitTimer < 0f)
+        fourGapCD-= Time.deltaTime;
+        quadraCD -= Time.deltaTime;
+        if(quadraCD < 0f && transformWaitTimer < 0f && fourGapCD > 0)
         {
             summonTheFour();
             quadraCD = 0.1f;
         }
 
+        if(fourGapCD < -1.5f)
+        {
+            fourGapCD = 1.5f;
+        }
 
 
         float angleDifference = Vector2.SignedAngle(transform.up, directionToPlayer);
@@ -499,6 +509,7 @@ public class bigManControl : MonoBehaviour
             lastatkended = true;
             rotSpeed = 80f;
             transform.rotation = Quaternion.Euler(0, 0, 0);
+            gunTransformed = false;
         }
     }
 
