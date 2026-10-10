@@ -466,7 +466,7 @@ public class wizkingmovement : MonoBehaviour
         {
             warningraystimer = 0.05f;
             warningcount--;
-            Vector2 p1 = new Vector2(rb.position.x + 10f * dirX + 3 * (30-warningcount+1) * dirX, rb.position.y - 20f);
+            Vector2 p1 = new Vector2(rb.position.x + 10f * dirX + 3 * (30-warningcount+1) * dirX, rb.position.y - 22.5f);
             bossprojshooter warningshoot = Instantiate(warningshooter, p1, Quaternion.identity).GetComponent<bossprojshooter>();
             warningshoot.ydir = 1;
             warningshoot.xdir = 0;

@@ -21,7 +21,7 @@ public class dcoll : MonoBehaviour
 
     public bool parrying = false;
 
-    float parrytimer = 0.45f;
+    float parrytimer = 0.3f;
 
    
 
@@ -50,7 +50,7 @@ public class dcoll : MonoBehaviour
         findz = FindObjectOfType<PlayerMovement>();
 
         coll.isTrigger = true;
-        initparryflourishtimer = 0.5f;
+        initparryflourishtimer = 0.3f;
     }
     private void Update()
     {
@@ -66,7 +66,7 @@ public class dcoll : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             parrying = true;
-            parrytimer = 0.45f;
+            parrytimer = 0.3f;
 
             for (int i = 0; i < numTimesParriedInLast; i++) {
                 parrytimer *= 1f/3f;
